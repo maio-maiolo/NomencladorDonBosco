@@ -370,16 +370,16 @@
         </svg> CAM
     </button>
 
-    <button type="button" class="btn-nav" onclick="verMapaJurisdiccion()">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align: middle; margin-right: 5px;">
-            <path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/>
-        </svg> ZONAS
-    </button>
+    <button type="button" class="btn-nav" onclick="alternarZonas()">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align: middle; margin-right: 5px;">
+        <path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/>
+    </svg> ZONAS
+</button>
 
     <button type="button" class="btn-nav" onclick="descargarPDF()">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align: middle; margin-right: 5px;">
             <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-        </svg> CALLES
+        </svg> PDF
     </button>
 
     <button type="button" class="btn-nav" onclick="imprimirMapa()">
@@ -753,33 +753,66 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         centrarMapaInicial();
     };
-   /* --- Lógica para alternar Mapas --- */
-
+/* --- Lógica para alternar Mapas --- */
+const ZONAS_MAPS_URL = "https://www.google.com/maps/d/embed?mid=1lUbmQUK_E65nipknpMA6i16KNHLNBVI&ehbc=2E312F"; 
 const MY_MAPS_URL = "https://www.google.com/maps/d/embed?mid=1q9r_H9K5cqbAjxtSMDrWQD2DA_2oZns&ehbc=2E312F"; 
+
 // URL Inicial (Mapa Original)
 const MAPA_ORIGINAL_QUERY = encodeURIComponent("Aconcagua 14, Ramos Mejia, Buenos Aires");
-const MAPA_ORIGINAL_URL = `https://www.google.com/maps?q=${MAPA_ORIGINAL_QUERY}&output=embed`;
+const MAPA_ORIGINAL_URL = `https://www.google.com/maps?q=$${MAPA_ORIGINAL_QUERY}&output=embed`;
 
 let mostrandoMyMaps = false;
+let mostrandoZonas = false;
+
+function alternarZonas() {
+    const mapa = document.getElementById('mapaFrame');
+    const btnZonas = document.querySelector('button[onclick="alternarZonas()"]');
+    const btnCam = document.getElementById('btn-cam');
+    const nav = document.getElementById('navButtons');
+
+    if (!mostrandoZonas) {
+        // ACTIVAR MODO ZONAS
+        mapa.src = ZONAS_MAPS_URL;
+        btnZonas.classList.add('active-cam'); 
+        
+        // Apagar CAM si estaba encendido
+        mostrandoMyMaps = false;
+        btnCam.classList.remove('active-cam');
+        
+        mostrandoZonas = true;
+    } else {
+        // VOLVER AL MAPA ORIGINAL
+        mapa.src = MAPA_ORIGINAL_URL;
+        btnZonas.classList.remove('active-cam');
+        mostrandoZonas = false;
+    }
+
+    if (nav) nav.classList.remove('active');
+}
 
 function alternarMyMaps() {
     const mapa = document.getElementById('mapaFrame');
     const btnCam = document.getElementById('btn-cam');
+    const btnZonas = document.querySelector('button[onclick="alternarZonas()"]');
     const nav = document.getElementById('navButtons');
 
     if (!mostrandoMyMaps) {
-        // ACTIVAR MODO MY MAPS
+        // ACTIVAR MODO CAM
         mapa.src = MY_MAPS_URL;
-        btnCam.classList.add('active-cam'); // Pone el botón en verde
+        btnCam.classList.add('active-cam');
+        
+        // Apagar ZONAS si estaba encendido
+        mostrandoZonas = false;
+        if(btnZonas) btnZonas.classList.remove('active-cam');
+        
         mostrandoMyMaps = true;
     } else {
         // VOLVER AL MAPA ORIGINAL
         mapa.src = MAPA_ORIGINAL_URL;
-        btnCam.classList.remove('active-cam'); // Quita el color verde
+        btnCam.classList.remove('active-cam');
         mostrandoMyMaps = false;
     }
 
-    // Cerrar menú en móviles
     if (nav) nav.classList.remove('active');
 }
 </script>
