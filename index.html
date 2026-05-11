@@ -134,6 +134,12 @@
             transition: 0.3s; 
         }
 
+          .btn-nav.active-cam {
+           background-color: var(--verde-policial) !important;
+           color: var(--azul-oscuro) !important;
+           border-color: var(--verde-policial) !important;
+          font-weight: bold;
+       }
         .btn-nav:hover { 
             background: var(--verde-policial); 
             color: var(--azul-oscuro);
@@ -357,18 +363,29 @@
             </div>
             
             <button class="hamburger" onclick="toggleMenu()">☰</button>
-            <div class="nav-buttons" id="navButtons">
-    <button type="button" class="btn-nav" onclick="abrirCam()">
-        <i class="fas fa-video"></i> cam 
+           <div class="nav-buttons" id="navButtons">
+    <button type="button" id="btn-cam" class="btn-nav" onclick="alternarMyMaps()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align: middle; margin-right: 5px;">
+            <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+        </svg> CAM
     </button>
+
     <button type="button" class="btn-nav" onclick="verMapaJurisdiccion()">
-        <i class="fas fa-map-marked-alt"></i> mapa 
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align: middle; margin-right: 5px;">
+            <path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/>
+        </svg> ZONAS
     </button>
+
     <button type="button" class="btn-nav" onclick="descargarPDF()">
-        <i class="fas fa-file-pdf"></i> pdf
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align: middle; margin-right: 5px;">
+            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+        </svg> CALLES
     </button>
+
     <button type="button" class="btn-nav" onclick="imprimirMapa()">
-        <i class="fas fa-print"></i> imprimir
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align: middle; margin-right: 5px;">
+            <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>
+        </svg> IMPRIMIR
     </button>
 </div>
         </div>
@@ -540,8 +557,6 @@
         document.getElementById('navButtons').classList.remove('active');
     }
      
-    
-
     function descargarPDF() { 
         window.open(PDF_URL, '_blank'); 
         document.getElementById('navButtons').classList.remove('active');
@@ -588,7 +603,12 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // 3. Cargar el mapa
-    centrarMapaInicial();
+   function centrarMapaInicial() {
+    const mapa = document.getElementById('mapaFrame');
+    if (mapa) {
+        mapa.src = MAPA_ORIGINAL_URL;
+    }
+}
 });
 
     function alternarLista() {
@@ -733,10 +753,35 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         centrarMapaInicial();
     };
-   function abrirCam() {
-    window.open("https://www.google.com/maps/d/edit?mid=1q9r_H9K5cqbAjxtSMDrWQD2DA_2oZns&usp=sharing", '_blank');
-    document.getElementById('navButtons').classList.remove('active');
+   /* --- Lógica para alternar Mapas --- */
+
+const MY_MAPS_URL = "https://www.google.com/maps/d/embed?mid=1q9r_H9K5cqbAjxtSMDrWQD2DA_2oZns&ehbc=2E312F"; 
+// URL Inicial (Mapa Original)
+const MAPA_ORIGINAL_QUERY = encodeURIComponent("Aconcagua 14, Ramos Mejia, Buenos Aires");
+const MAPA_ORIGINAL_URL = `https://www.google.com/maps?q=${MAPA_ORIGINAL_QUERY}&output=embed`;
+
+let mostrandoMyMaps = false;
+
+function alternarMyMaps() {
+    const mapa = document.getElementById('mapaFrame');
+    const btnCam = document.getElementById('btn-cam');
+    const nav = document.getElementById('navButtons');
+
+    if (!mostrandoMyMaps) {
+        // ACTIVAR MODO MY MAPS
+        mapa.src = MY_MAPS_URL;
+        btnCam.classList.add('active-cam'); // Pone el botón en verde
+        mostrandoMyMaps = true;
+    } else {
+        // VOLVER AL MAPA ORIGINAL
+        mapa.src = MAPA_ORIGINAL_URL;
+        btnCam.classList.remove('active-cam'); // Quita el color verde
+        mostrandoMyMaps = false;
     }
+
+    // Cerrar menú en móviles
+    if (nav) nav.classList.remove('active');
+}
 </script>
 
 </body>
