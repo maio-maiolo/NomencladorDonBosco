@@ -300,3 +300,20 @@ tr:hover { background: var(--gris-claro); cursor: pointer; }
     .btn-nav { width: 100%; text-align: left; }
     th, td { padding: 8px 5px; font-size: 13px; }
 }
+.header-flex img {
+        height: 35px !important; 
+    }
+    .header-flex h2 {
+        font-size: 16px !important;
+    }
+
+    .header-flex small {
+        font-size: 10px !important;
+        display: block; /* Asegura que el subtítulo baje si es necesario */
+    }
+
+    /* Ajustar el espacio del contenedor del logo */
+    .header-flex > div:first-child {
+        gap: 8px !important;
+    }
+}
